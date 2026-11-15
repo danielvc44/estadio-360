@@ -41,7 +41,7 @@ export default function BookingForm({ currentMode }) {
         tipo: 'Tour / Visita Guiada'
       };
 
-      const response = await fetch('http://localhost:5000/api/reservas', {
+      const response = await fetch('https://estadio-360-backend.onrender.com/api/reservas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

@@ -14,24 +14,26 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Crea la tabla automáticamente en Neon al arrancar si no existe
+// Crea la tabla con los campos exactos de tu formulario
 pool.query(`
-  CREATE TABLE IF NOT EXISTS reservas (
+  CREATE TABLE IF NOT EXISTS reservas_tours (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100),
     correo VARCHAR(100),
-    zona VARCHAR(50),
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    estadio VARCHAR(100),
+    fecha VARCHAR(50),
+    hora VARCHAR(50),
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
 `).then(() => console.log('✅ Conectado a Neon y tabla lista'))
   .catch(err => console.error('❌ Error conectando a Neon:', err));
 
 app.post('/api/reservas', async (req, res) => {
-  const { nombre, correo, zona } = req.body;
+  const { nombre, correo, estadio, fecha, hora } = req.body;
   try {
     const result = await pool.query(
-      'INSERT INTO reservas (nombre, correo, zona) VALUES ($1, $2, $3) RETURNING *',
-      [nombre, correo, zona]
+      'INSERT INTO reservas_tours (nombre, correo, estadio, fecha, hora) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [nombre, correo, estadio, fecha, hora]
     );
     res.status(201).json({ mensaje: 'Reserva guardada en Neon', reserva: result.rows[0] });
   } catch (error) {
